@@ -1,0 +1,32 @@
+# Vercel ignore file
+# Files and directories to exclude from Vercel deployments
+
+# Tests
+src/__tests__/
+vitest.config.ts
+vitest.setup.ts
+*.test.ts
+*.spec.ts
+
+# Documentation
+*.md
+!README.md
+
+# Development files
+.env.local
+.env*.local
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Build artifacts (will be regenerated)
+.next/
+node_modules/
+
+# Scripts (not needed in production)
+scripts/
