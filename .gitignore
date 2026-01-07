@@ -1,0 +1,31 @@
+# Root level gitignore for paper-trade repository
+
+# Dependencies (project has its own node_modules in subdirectory)
+node_modules/
+package-lock.json
+
+# Environment files
+.env
+.env.local
+.env*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+.cache/
