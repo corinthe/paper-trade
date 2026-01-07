@@ -8,7 +8,7 @@ Reproduction complète du projet Claude Prophet (Go) en Next.js/TypeScript.
 ## Objectif
 Créer un système de trading autonome pilotable via Claude Code (MCP) avec :
 - API de trading (Alpaca)
-- Analyse de news (Gemini AI)
+- Analyse de news (Claude AI)
 - Recherche sémantique (Vector DB)
 - Position management
 - Activity logging
@@ -23,7 +23,7 @@ Créer un système de trading autonome pilotable via Claude Code (MCP) avec :
 | Base de données | PostgreSQL (Vercel Postgres ou Supabase) |
 | Vector Search | pgvector extension |
 | Trading API | Alpaca Markets |
-| AI Analysis | Google Gemini |
+| AI Analysis | Claude |
 | MCP Server | @modelcontextprotocol/sdk |
 | Frontend UI | React + Tailwind + shadcn/ui |
 | ORM | Prisma |
@@ -49,7 +49,7 @@ Créer un système de trading autonome pilotable via Claude Code (MCP) avec :
 
 ### Phase 2 : Intelligence
 - [ ] News aggregation (MarketWatch, Google News)
-- [ ] Gemini AI news cleaning
+- [ ] Claude AI news cleaning
 - [ ] Stock analysis (technical indicators)
 - [ ] Market intelligence endpoints
 
@@ -96,7 +96,7 @@ Créer un système de trading autonome pilotable via Claude Code (MCP) avec :
 ## Architecture cible
 
 ```
-prophet-trader-nextjs/
+paper-trader-nextjs/
 ├── app/
 │   ├── api/                    # Backend API Routes
 │   │   ├── trading/
@@ -138,20 +138,16 @@ prophet-trader-nextjs/
 ## Setup rapide
 
 ```bash
-# 1. Cloner et installer
-git clone <repo>
-cd prophet-trader-nextjs
-npm install
 
-# 2. Configuration
+# 1. Configuration
 cp .env.example .env.local
 # Remplir les credentials
 
-# 3. Database
+# 2. Database
 npx prisma generate
 npx prisma db push
 
-# 4. Lancer
+# 3. Lancer
 npm run dev
 ```
 
@@ -168,7 +164,6 @@ npm run dev
 ## Resources
 
 - [Alpaca API Docs](https://alpaca.markets/docs/)
-- [Gemini API Docs](https://ai.google.dev/docs)
 - [Next.js Docs](https://nextjs.org/docs)
 - [Prisma Docs](https://www.prisma.io/docs)
 - [MCP Protocol](https://modelcontextprotocol.io)

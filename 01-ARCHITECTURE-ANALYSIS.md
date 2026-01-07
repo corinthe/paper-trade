@@ -16,7 +16,7 @@ Claude_Prophet/
 │   ├── alpaca_data.go          # 8 fonctions
 │   ├── alpaca_options_data.go  # 6 fonctions
 │   ├── alpaca_trading.go       # 12 fonctions
-│   ├── gemini_service.go       # 3 fonctions
+│   ├── claude_service.go       # 3 fonctions
 │   ├── news_service.go         # 8 fonctions
 │   ├── position_manager.go     # 10 fonctions
 │   ├── stock_analysis.go       # 5 fonctions
@@ -49,7 +49,7 @@ func GetActivityLog(w http.ResponseWriter, r *http.Request)
 
 #### intelligence_controller.go
 ```go
-// Quick market intelligence (15 articles MarketWatch + Gemini)
+// Quick market intelligence (15 articles MarketWatch + Claude)
 func GetQuickMarketIntelligence(w http.ResponseWriter, r *http.Request)
 
 // Analyse complète de stocks avec technicals + news
@@ -64,7 +64,7 @@ func AggregateAndSummarizeNews(w http.ResponseWriter, r *http.Request)
 // Recherche Google News
 func SearchNews(w http.ResponseWriter, r *http.Request)
 
-// News nettoyées par Gemini
+// News nettoyées par Claude
 func GetCleanedNews(w http.ResponseWriter, r *http.Request)
 
 // MarketWatch - Top stories
@@ -261,29 +261,29 @@ func (pm *PositionManager) getCurrentPrice(symbol string) (float64, error)
 func (pm *PositionManager) logPositionClosed(mp *ManagedPosition, reason string, price float64) error
 ```
 
-#### gemini_service.go
+#### claude_service.go
 ```go
-// Service Gemini AI
-type GeminiService struct {
-    client *genai.Client
-    model  *genai.GenerativeModel
+// Service Claude AI
+type ClaudeService struct {
+    client *anthropic.Client
+    model  string
 }
 
 // Constructeur
-func NewGeminiService() *GeminiService
+func NewClaudeService() *ClaudeService
 
 // Nettoyer et résumer des news pour trading
-func (g *GeminiService) CleanNewsForTrading(articles []NewsArticle) (*CleanedNews, error)
+func (c *ClaudeService) CleanNewsForTrading(articles []NewsArticle) (*CleanedNews, error)
 
 // Analyser un stock avec contexte
-func (g *GeminiService) AnalyzeStockForTrading(params StockAnalysisParams) (*StockAnalysis, error)
+func (c *ClaudeService) AnalyzeStockForTrading(params StockAnalysisParams) (*StockAnalysis, error)
 ```
 
 #### news_service.go
 ```go
 // Service d'agrégation de news
 type NewsService struct {
-    geminiService *GeminiService
+    claudeService *ClaudeService
 }
 
 // Constructeur
@@ -438,7 +438,7 @@ func (s *Storage) GetTradeStats(filters TradeStatsFilters) (*TradeStats, error)
          │
          ↓
     External APIs
-    (Alpaca, Gemini)
+    (Alpaca, Claude)
 ```
 
 ### 2. Dependency Injection

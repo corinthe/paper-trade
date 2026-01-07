@@ -67,12 +67,12 @@ Puis continue avec les phases suivantes
 Next.js 14 + TypeScript
 ├── API Routes (Backend)
 │   ├── Trading (Alpaca)
-│   ├── Intelligence (Gemini AI)
+│   ├── Intelligence (Claude AI)
 │   ├── Vector Search (pgvector)
 │   └── Activity Logging
 ├── Services Layer
 │   ├── AlpacaTradingService
-│   ├── GeminiService
+│   ├── ClaudeService
 │   ├── PositionManager
 │   └── VectorSearchService
 ├── Database (Prisma + PostgreSQL)
@@ -92,7 +92,7 @@ Next.js 14 + TypeScript
 - [ ] Tests unitaires
 
 ### Phase 2 : Intelligence (Semaine 2)
-- [ ] Integration Gemini
+- [ ] Integration Claude
 - [ ] News aggregation
 - [ ] Technical analysis
 - [ ] Stock analysis API
@@ -130,7 +130,7 @@ Next.js 14 + TypeScript
 - **Repo Go original** : https://github.com/JakeNesler/Claude_Prophet
 - **Article Medium** : Jake Nesler - "I gave Claude Code 100k to trade..."
 - **Alpaca API** : https://alpaca.markets/docs/
-- **Gemini API** : https://ai.google.dev/docs
+- **Claude API** : https://docs.anthropic.com
 - **Next.js Docs** : https://nextjs.org/docs
 
 ## 📝 Notes
@@ -166,7 +166,7 @@ Next.js 14 + TypeScript
 Pour toute question sur ce kit de migration, référer à :
 - Documentation complète dans chaque fichier .md
 - Code Go original pour la référence
-- Spécifications Alpaca/Gemini pour les APIs
+- Spécifications Alpaca/Claude pour les APIs
 
 ---
 

@@ -1,0 +1,331 @@
+// Prisma schema for Prophet Trader
+// Migration from SQLite to PostgreSQL with pgvector
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  extensions = [vector]
+}
+
+// ============================================================================
+// TRADING MODELS
+// ============================================================================
+
+model Order {
+  id                String   @id @default(cuid())
+  client_order_id   String?  @unique
+  symbol            String
+  qty               Float
+  side              OrderSide
+  type              OrderType
+  time_in_force     TimeInForce
+  status            OrderStatus
+  filled_qty        Float    @default(0)
+  filled_avg_price  Float?
+  limit_price       Float?
+  stop_price        Float?
+  extended_hours    Boolean  @default(false)
+  submitted_at      DateTime?
+  filled_at         DateTime?
+  canceled_at       DateTime?
+  failed_at         DateTime?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  @@index([symbol])
+  @@index([status])
+  @@index([created_at])
+}
+
+enum OrderSide {
+  buy
+  sell
+  buy_to_open
+  buy_to_close
+  sell_to_open
+  sell_to_close
+}
+
+enum OrderType {
+  market
+  limit
+  stop
+  stop_limit
+  trailing_stop
+}
+
+enum TimeInForce {
+  day
+  gtc
+  ioc
+  fok
+  opg
+  cls
+}
+
+enum OrderStatus {
+  new
+  partially_filled
+  filled
+  done_for_day
+  canceled
+  expired
+  replaced
+  pending_cancel
+  pending_replace
+  accepted
+  pending_new
+  accepted_for_bidding
+  stopped
+  rejected
+  suspended
+  calculated
+}
+
+// ============================================================================
+
+model Position {
+  id                String   @id @default(cuid())
+  symbol            String   @unique
+  asset_id          String?
+  exchange          String?
+  asset_class       AssetClass
+  qty               Float
+  avg_entry_price   Float
+  current_price     Float?
+  market_value      Float?
+  cost_basis        Float
+  unrealized_pl     Float?
+  unrealized_plpc   Float?
+  unrealized_intraday_pl   Float?
+  unrealized_intraday_plpc Float?
+  side              PositionSide
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  @@index([symbol])
+  @@index([asset_class])
+}
+
+enum AssetClass {
+  us_equity
+  us_option
+  crypto
+}
+
+enum PositionSide {
+  long
+  short
+}
+
+// ============================================================================
+
+model ManagedPosition {
+  id                String   @id @default(cuid())
+  symbol            String
+  qty               Float
+  entry_price       Float
+  entry_order_id    String?
+  stop_loss_pct     Float
+  take_profit_pct   Float
+  stop_loss_price   Float
+  take_profit_price Float
+  trailing_stop     Boolean  @default(false)
+  status            ManagedPositionStatus
+  current_price     Float?
+  unrealized_pl     Float?
+  unrealized_plpc   Float?
+  closed_price      Float?
+  closed_reason     String?
+  exit_order_id     String?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  closed_at         DateTime?
+
+  @@index([symbol])
+  @@index([status])
+  @@index([created_at])
+}
+
+enum ManagedPositionStatus {
+  active
+  monitoring
+  stop_loss_triggered
+  take_profit_triggered
+  closed
+  error
+}
+
+// ============================================================================
+// MARKET DATA
+// ============================================================================
+
+model Bar {
+  id         String   @id @default(cuid())
+  symbol     String
+  timeframe  String
+  timestamp  DateTime
+  open       Float
+  high       Float
+  low        Float
+  close      Float
+  volume     BigInt
+  vwap       Float?
+  trade_count Int?
+  created_at DateTime @default(now())
+
+  @@unique([symbol, timeframe, timestamp])
+  @@index([symbol, timeframe, timestamp])
+}
+
+model Quote {
+  id         String   @id @default(cuid())
+  symbol     String
+  timestamp  DateTime
+  bid_price  Float
+  bid_size   Int
+  ask_price  Float
+  ask_size   Int
+  conditions String[]
+  tape       String?
+  created_at DateTime @default(now())
+
+  @@index([symbol, timestamp])
+}
+
+model Snapshot {
+  id           String   @id @default(cuid())
+  symbol       String
+  latest_trade Json?
+  latest_quote Json?
+  minute_bar   Json?
+  daily_bar    Json?
+  prev_daily_bar Json?
+  created_at   DateTime @default(now())
+
+  @@index([symbol])
+}
+
+// ============================================================================
+// INTELLIGENCE & ANALYSIS
+// ============================================================================
+
+model NewsArticle {
+  id            String   @id @default(cuid())
+  source        String
+  title         String
+  url           String   @unique
+  author        String?
+  published_at  DateTime
+  content       String?  @db.Text
+  summary       String?  @db.Text
+  symbols       String[]
+  sentiment     Float?
+  relevance     Float?
+  created_at    DateTime @default(now())
+
+  @@index([published_at])
+  @@index([source])
+  @@index([symbols])
+}
+
+model StockAnalysis {
+  id                String   @id @default(cuid())
+  symbol            String
+  current_price     Float
+  technical_analysis Json
+  news_sentiment    Json?
+  options_flow      Json?
+  ai_recommendation Json
+  analyzed_at       DateTime @default(now())
+  created_at        DateTime @default(now())
+
+  @@index([symbol, analyzed_at])
+}
+
+// ============================================================================
+// VECTOR SEARCH & MEMORY
+// ============================================================================
+
+model Decision {
+  id              String   @id @default(cuid())
+  symbol          String
+  action          DecisionAction
+  strategy        String
+  reasoning       String   @db.Text
+  market_context  String?  @db.Text
+  confidence      Float?
+  entry_price     Float?
+  qty             Float?
+  stop_loss       Float?
+  take_profit     Float?
+  result_pct      Float?
+  result_dollars  Float?
+  embedding       Unsupported("vector(768)")?
+  created_at      DateTime @default(now())
+
+  @@index([symbol])
+  @@index([action])
+  @@index([strategy])
+  @@index([created_at])
+}
+
+enum DecisionAction {
+  BUY
+  SELL
+  HOLD
+  CLOSE
+  ADJUST
+}
+
+// ============================================================================
+// ACTIVITY LOGGING
+// ============================================================================
+
+model ActivityLog {
+  id         String   @id @default(cuid())
+  type       ActivityType
+  message    String   @db.Text
+  metadata   Json?
+  created_at DateTime @default(now())
+
+  @@index([type])
+  @@index([created_at])
+}
+
+enum ActivityType {
+  TRADE
+  ANALYSIS
+  DECISION
+  ERROR
+  INFO
+  WARNING
+  SYSTEM
+}
+
+// ============================================================================
+// SYSTEM & CONFIGURATION
+// ============================================================================
+
+model SystemConfig {
+  key        String   @id
+  value      Json
+  updated_at DateTime @updatedAt
+}
+
+model TradingSession {
+  id          String   @id @default(cuid())
+  started_at  DateTime @default(now())
+  ended_at    DateTime?
+  total_trades Int     @default(0)
+  total_pnl   Float    @default(0)
+  win_rate    Float?
+  metadata    Json?
+
+  @@index([started_at])
+}

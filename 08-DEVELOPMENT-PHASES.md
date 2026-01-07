@@ -10,8 +10,8 @@
 ### Tâches
 1. Setup projet
    ```bash
-   npx create-next-app@latest prophet-trader-nextjs --typescript
-   cd prophet-trader-nextjs
+   npx create-next-app@latest paper-trader-nextjs --typescript
+   cd paper-trader-nextjs
    npm install @alpacahq/alpaca-trade-api @prisma/client zod
    ```
 
@@ -41,13 +41,13 @@
 ## Phase 2 : Intelligence & AI (Semaine 2)
 
 ### Objectifs
-- Intégration Gemini
+- Intégration Claude
 - News aggregation
 - Stock analysis
 
 ### Tâches
-1. Service Gemini
-   - `lib/services/gemini.ts`
+1. Service Claude
+   - `lib/services/claude.ts`
    - News cleaning
    - Stock analysis
 
@@ -107,7 +107,7 @@
 ### Tâches
 1. Embedding Service
    - `lib/services/embeddings.ts`
-   - Gemini embeddings API
+   - Claude embeddings via Voyage AI
 
 2. Vector DB
    - pgvector extension
@@ -190,7 +190,7 @@
 - [ ] Paper trading testé
 
 ### Phase 2 ✓
-- [ ] Gemini API configurée
+- [ ] Claude API configurée
 - [ ] News fetch MarketWatch
 - [ ] Technical indicators calculés
 - [ ] GET /api/intelligence/news/quick → 200

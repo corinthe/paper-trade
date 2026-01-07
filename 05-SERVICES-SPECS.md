@@ -10,7 +10,7 @@ lib/services/
 │   ├── trading.ts      # AlpacaTradingService
 │   ├── data.ts         # AlpacaDataService
 │   └── options.ts      # AlpacaOptionsDataService
-├── gemini.ts           # GeminiService
+├── claude.ts           # ClaudeService
 ├── news.ts             # NewsService
 ├── analysis/
 │   ├── stock.ts        # StockAnalysisService
@@ -49,7 +49,7 @@ export class ServiceName {
 
 Pour chaque service, consulter le fichier Go correspondant dans `services/`:
 - `alpaca_trading.go` → `lib/services/alpaca/trading.ts`
-- `gemini_service.go` → `lib/services/gemini.ts`
+- `claude_service.go` → `lib/services/claude.ts`
 - etc.
 
 Reproduire exactement la même logique métier, adaptée à TypeScript/async.

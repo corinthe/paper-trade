@@ -534,7 +534,7 @@ const ConfigSchema = z.object({
     secretKey: z.string(),
     paper: z.boolean(),
   }),
-  gemini: z.object({
+  claude: z.object({
     apiKey: z.string(),
   }),
 })
@@ -545,8 +545,8 @@ export const config = ConfigSchema.parse({
     secretKey: process.env.ALPACA_SECRET_KEY!,
     paper: process.env.ALPACA_PAPER === 'true',
   },
-  gemini: {
-    apiKey: process.env.GEMINI_API_KEY!,
+  claude: {
+    apiKey: process.env.ANTHROPIC_API_KEY!,
   },
 })
 
@@ -599,23 +599,24 @@ const client = new Alpaca({
 
 | Go | Next.js |
 |----|---------|
-| `github.com/google/generative-ai-go` | `@google/generative-ai` |
+| `github.com/anthropics/anthropic-sdk-go` | `@anthropic-ai/sdk` |
 
 ```go
 // Go
-import "github.com/google/generative-ai-go/genai"
+import "github.com/anthropics/anthropic-sdk-go"
 
-ctx := context.Background()
-client, err := genai.NewClient(ctx, option.WithAPIKey(apiKey))
-model := client.GenerativeModel("gemini-pro")
+client := anthropic.NewClient(
+    option.WithAPIKey(apiKey),
+)
 ```
 
 ```typescript
 // Next.js
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import Anthropic from '@anthropic-ai/sdk'
 
-const genAI = new GoogleGenerativeAI(apiKey)
-const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY!,
+})
 ```
 
 ## Vector Search
