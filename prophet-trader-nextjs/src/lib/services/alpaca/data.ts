@@ -139,63 +139,63 @@ export class AlpacaDataService {
 
         return {
           symbol,
-          latestTrade: snapshot.latestTrade
+          latestTrade: (snapshot as any).LatestTrade
             ? {
-                t: snapshot.latestTrade.Timestamp,
-                x: snapshot.latestTrade.Exchange,
-                p: snapshot.latestTrade.Price,
-                s: snapshot.latestTrade.Size,
-                c: snapshot.latestTrade.Conditions,
-                i: snapshot.latestTrade.ID,
-                z: snapshot.latestTrade.Tape,
+                t: (snapshot as any).LatestTrade.Timestamp,
+                x: (snapshot as any).LatestTrade.Exchange,
+                p: (snapshot as any).LatestTrade.Price,
+                s: (snapshot as any).LatestTrade.Size,
+                c: (snapshot as any).LatestTrade.Conditions,
+                i: (snapshot as any).LatestTrade.ID,
+                z: (snapshot as any).LatestTrade.Tape,
               }
             : undefined,
-          latestQuote: snapshot.latestQuote
+          latestQuote: (snapshot as any).LatestQuote
             ? {
-                t: snapshot.latestQuote.Timestamp,
-                ax: snapshot.latestQuote.AskExchange,
-                ap: snapshot.latestQuote.AskPrice,
-                as: snapshot.latestQuote.AskSize,
-                bx: snapshot.latestQuote.BidExchange,
-                bp: snapshot.latestQuote.BidPrice,
-                bs: snapshot.latestQuote.BidSize,
-                c: snapshot.latestQuote.Conditions,
+                t: (snapshot as any).LatestQuote.Timestamp,
+                ax: (snapshot as any).LatestQuote.AskExchange,
+                ap: (snapshot as any).LatestQuote.AskPrice,
+                as: (snapshot as any).LatestQuote.AskSize,
+                bx: (snapshot as any).LatestQuote.BidExchange,
+                bp: (snapshot as any).LatestQuote.BidPrice,
+                bs: (snapshot as any).LatestQuote.BidSize,
+                c: (snapshot as any).LatestQuote.Conditions,
               }
             : undefined,
-          minuteBar: snapshot.minuteBar
+          minuteBar: (snapshot as any).MinuteBar
             ? {
-                t: snapshot.minuteBar.Timestamp,
-                o: snapshot.minuteBar.OpenPrice,
-                h: snapshot.minuteBar.HighPrice,
-                l: snapshot.minuteBar.LowPrice,
-                c: snapshot.minuteBar.ClosePrice,
-                v: snapshot.minuteBar.Volume,
-                n: snapshot.minuteBar.TradeCount,
-                vw: snapshot.minuteBar.VWAP,
+                t: (snapshot as any).MinuteBar.Timestamp,
+                o: (snapshot as any).MinuteBar.OpenPrice,
+                h: (snapshot as any).MinuteBar.HighPrice,
+                l: (snapshot as any).MinuteBar.LowPrice,
+                c: (snapshot as any).MinuteBar.ClosePrice,
+                v: (snapshot as any).MinuteBar.Volume,
+                n: (snapshot as any).MinuteBar.TradeCount,
+                vw: (snapshot as any).MinuteBar.VWAP,
               }
             : undefined,
-          dailyBar: snapshot.dailyBar
+          dailyBar: (snapshot as any).DailyBar
             ? {
-                t: snapshot.dailyBar.Timestamp,
-                o: snapshot.dailyBar.OpenPrice,
-                h: snapshot.dailyBar.HighPrice,
-                l: snapshot.dailyBar.LowPrice,
-                c: snapshot.dailyBar.ClosePrice,
-                v: snapshot.dailyBar.Volume,
-                n: snapshot.dailyBar.TradeCount,
-                vw: snapshot.dailyBar.VWAP,
+                t: (snapshot as any).DailyBar.Timestamp,
+                o: (snapshot as any).DailyBar.OpenPrice,
+                h: (snapshot as any).DailyBar.HighPrice,
+                l: (snapshot as any).DailyBar.LowPrice,
+                c: (snapshot as any).DailyBar.ClosePrice,
+                v: (snapshot as any).DailyBar.Volume,
+                n: (snapshot as any).DailyBar.TradeCount,
+                vw: (snapshot as any).DailyBar.VWAP,
               }
             : undefined,
-          prevDailyBar: snapshot.prevDailyBar
+          prevDailyBar: (snapshot as any).PrevDailyBar
             ? {
-                t: snapshot.prevDailyBar.Timestamp,
-                o: snapshot.prevDailyBar.OpenPrice,
-                h: snapshot.prevDailyBar.HighPrice,
-                l: snapshot.prevDailyBar.LowPrice,
-                c: snapshot.prevDailyBar.ClosePrice,
-                v: snapshot.prevDailyBar.Volume,
-                n: snapshot.prevDailyBar.TradeCount,
-                vw: snapshot.prevDailyBar.VWAP,
+                t: (snapshot as any).PrevDailyBar.Timestamp,
+                o: (snapshot as any).PrevDailyBar.OpenPrice,
+                h: (snapshot as any).PrevDailyBar.HighPrice,
+                l: (snapshot as any).PrevDailyBar.LowPrice,
+                c: (snapshot as any).PrevDailyBar.ClosePrice,
+                v: (snapshot as any).PrevDailyBar.Volume,
+                n: (snapshot as any).PrevDailyBar.TradeCount,
+                vw: (snapshot as any).PrevDailyBar.VWAP,
               }
             : undefined,
         } as Snapshot;

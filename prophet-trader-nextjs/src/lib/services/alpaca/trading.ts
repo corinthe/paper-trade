@@ -151,7 +151,7 @@ export class AlpacaTradingService {
 
     return withRetry(
       async () => {
-        const orders = await this.client.getOrders(params);
+        const orders = await this.client.getOrders(params as any);
         logger.info('Orders fetched successfully', {
           count: orders.length,
           status: params?.status,
