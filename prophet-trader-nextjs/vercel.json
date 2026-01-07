@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "buildCommand": "cd prophet-trader-nextjs && npm install && npx prisma generate && npm run build",
-  "devCommand": "cd prophet-trader-nextjs && npm run dev",
-  "installCommand": "cd prophet-trader-nextjs && npm install",
+  "buildCommand": "npm install && npx prisma generate && npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
   "framework": "nextjs",
-  "outputDirectory": "prophet-trader-nextjs/.next",
+  "outputDirectory": ".next",
   "env": {
     "ALPACA_API_KEY": "@alpaca-api-key",
     "ALPACA_SECRET_KEY": "@alpaca-secret-key",
@@ -24,11 +24,5 @@
       "maxDuration": 30
     }
   },
-  "regions": ["iad1"],
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    }
-  ]
+  "regions": ["iad1"]
 }
