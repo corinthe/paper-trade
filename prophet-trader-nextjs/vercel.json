@@ -5,15 +5,6 @@
   "installCommand": "npm install",
   "framework": "nextjs",
   "outputDirectory": ".next",
-  "env": {
-    "ALPACA_API_KEY": "@alpaca-api-key",
-    "ALPACA_SECRET_KEY": "@alpaca-secret-key",
-    "ALPACA_PAPER": "true",
-    "ANTHROPIC_API_KEY": "@anthropic-api-key",
-    "DATABASE_URL": "@database-url",
-    "DIRECT_URL": "@direct-url",
-    "NODE_ENV": "production"
-  },
   "build": {
     "env": {
       "PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING": "1"
