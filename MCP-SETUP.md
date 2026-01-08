@@ -15,23 +15,26 @@ Model Context Protocol (MCP) is a protocol that allows AI assistants like Claude
 
 ## Prerequisites
 
-1. **Next.js Backend Running**
-   ```bash
-   cd prophet-trader-nextjs
-   npm run dev
-   ```
-   The backend must be running on `http://localhost:3000`
+**Build the MCP Server**
+```bash
+cd mcp-server
+npm install
+npm run build
+```
 
-2. **Build the MCP Server**
-   ```bash
-   cd mcp-server
-   npm install
-   npm run build
-   ```
+That's it! The MCP server will connect to the production API on Vercel by default.
 
 ## Configuration
 
-### For Claude Code Desktop
+The MCP server can connect to either:
+- ✅ **Production (Recommended)**: `https://paper-trade-iota.vercel.app` - No local setup needed!
+- 🔧 **Local Development**: `http://localhost:3000` - For testing changes to the API
+
+### Option 1: Production API (Recommended)
+
+This is the **easiest option** - just point to the Vercel deployment!
+
+#### For Claude Code Desktop
 
 Add to your Claude Code MCP settings file:
 
@@ -48,7 +51,7 @@ Add to your Claude Code MCP settings file:
         "/absolute/path/to/paper-trade/mcp-server/dist/index.js"
       ],
       "env": {
-        "API_BASE_URL": "http://localhost:3000"
+        "API_BASE_URL": "https://paper-trade-iota.vercel.app"
       }
     }
   }
@@ -57,7 +60,7 @@ Add to your Claude Code MCP settings file:
 
 ⚠️ **Important**: Replace `/absolute/path/to/paper-trade` with your actual project path!
 
-### For Claude Code CLI
+#### For Claude Code CLI
 
 If using the CLI version, add to `~/.config/claude-code/mcp.json`:
 
@@ -70,12 +73,25 @@ If using the CLI version, add to `~/.config/claude-code/mcp.json`:
         "/absolute/path/to/paper-trade/mcp-server/dist/index.js"
       ],
       "env": {
-        "API_BASE_URL": "http://localhost:3000"
+        "API_BASE_URL": "https://paper-trade-iota.vercel.app"
       }
     }
   }
 }
 ```
+
+### Option 2: Local Development
+
+Only use this if you're developing/testing changes to the Next.js API locally.
+
+**Additional Prerequisites:**
+```bash
+cd prophet-trader-nextjs
+npm run dev
+```
+The backend must be running on `http://localhost:3000`
+
+Then use `http://localhost:3000` as the `API_BASE_URL` in your MCP configuration instead of the Vercel URL.
 
 ## Testing the Connection
 
@@ -270,9 +286,20 @@ Then test tools in the web interface.
 
 ## Next Steps
 
+### Using Production API (Recommended)
+
 1. ✅ Build the MCP server (`cd mcp-server && npm install && npm run build`)
-2. ✅ Add config to Claude Code
-3. ✅ Start Next.js backend (`cd prophet-trader-nextjs && npm run dev`)
+2. ✅ Add config to Claude Code (use Vercel URL: `https://paper-trade-iota.vercel.app`)
+3. ✅ Restart Claude Code
+4. ✅ Ask Claude to use the tools!
+
+**No local backend needed!** 🎉
+
+### Using Local Development
+
+1. ✅ Build the MCP server (`cd mcp-server && npm install && npm run build`)
+2. ✅ Start Next.js backend (`cd prophet-trader-nextjs && npm run dev`)
+3. ✅ Add config to Claude Code (use localhost URL)
 4. ✅ Restart Claude Code
 5. ✅ Ask Claude to use the tools!
 
