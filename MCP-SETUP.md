@@ -17,13 +17,16 @@ Model Context Protocol (MCP) is a protocol that allows AI assistants like Claude
 
 1. **Next.js Backend Running**
    ```bash
+   cd prophet-trader-nextjs
    npm run dev
    ```
    The backend must be running on `http://localhost:3000`
 
 2. **Build the MCP Server**
    ```bash
-   npm run mcp:build
+   cd mcp-server
+   npm install
+   npm run build
    ```
 
 ## Configuration
@@ -42,7 +45,7 @@ Add to your Claude Code MCP settings file:
     "prophet-trader": {
       "command": "node",
       "args": [
-        "/absolute/path/to/paper-trade/prophet-trader-nextjs/mcp-server/dist/index.js"
+        "/absolute/path/to/paper-trade/mcp-server/dist/index.js"
       ],
       "env": {
         "API_BASE_URL": "http://localhost:3000"
@@ -64,7 +67,7 @@ If using the CLI version, add to `~/.config/claude-code/mcp.json`:
     "prophet-trader": {
       "command": "node",
       "args": [
-        "/absolute/path/to/paper-trade/prophet-trader-nextjs/mcp-server/dist/index.js"
+        "/absolute/path/to/paper-trade/mcp-server/dist/index.js"
       ],
       "env": {
         "API_BASE_URL": "http://localhost:3000"
@@ -79,7 +82,8 @@ If using the CLI version, add to `~/.config/claude-code/mcp.json`:
 ### Method 1: MCP Inspector (Recommended)
 
 ```bash
-npm run mcp:inspect
+cd mcp-server
+npx @modelcontextprotocol/inspector node dist/index.js
 ```
 
 This opens a web interface where you can:
@@ -187,7 +191,7 @@ await get_quick_market_intelligence()
 ## Troubleshooting
 
 ### Server won't start
-- Make sure TypeScript compilation succeeded: `npm run mcp:build`
+- Make sure TypeScript compilation succeeded: `cd mcp-server && npm run build`
 - Check that the path in config is absolute, not relative
 - Verify node is in your PATH
 
@@ -215,7 +219,8 @@ npm run watch
 
 ### Testing individual tools
 ```bash
-npm run mcp:inspect
+cd mcp-server
+npx @modelcontextprotocol/inspector node dist/index.js
 ```
 
 Then test tools in the web interface.
@@ -223,7 +228,7 @@ Then test tools in the web interface.
 ### Adding new tools
 
 1. Add tool definition to appropriate file in `mcp-server/tools/`
-2. Rebuild: `npm run mcp:build`
+2. Rebuild: `cd mcp-server && npm run build`
 3. Restart Claude Code
 
 ## Security Notes
@@ -265,9 +270,9 @@ Then test tools in the web interface.
 
 ## Next Steps
 
-1. ✅ Build the MCP server (`npm run mcp:build`)
+1. ✅ Build the MCP server (`cd mcp-server && npm install && npm run build`)
 2. ✅ Add config to Claude Code
-3. ✅ Start Next.js backend (`npm run dev`)
+3. ✅ Start Next.js backend (`cd prophet-trader-nextjs && npm run dev`)
 4. ✅ Restart Claude Code
 5. ✅ Ask Claude to use the tools!
 

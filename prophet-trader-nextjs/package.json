@@ -10,10 +10,7 @@
     "type-check": "tsc --noEmit",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage",
-    "mcp:build": "cd mcp-server && npm run build",
-    "mcp:dev": "cd mcp-server && npm run dev",
-    "mcp:inspect": "cd mcp-server && npx @modelcontextprotocol/inspector node dist/index.js"
+    "test:coverage": "vitest --coverage"
   },
   "dependencies": {
     "@alpacahq/alpaca-trade-api": "^3.0.0",
