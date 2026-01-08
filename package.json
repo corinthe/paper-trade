@@ -1,0 +1,39 @@
+{
+  "name": "paper-trade-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Prophet Trader - Paper Trading System with Next.js and MCP Server",
+  "scripts": {
+    "dev": "cd prophet-trader-nextjs && npm run dev",
+    "build": "npm run build:nextjs && npm run build:mcp",
+    "build:nextjs": "cd prophet-trader-nextjs && npm run build",
+    "build:mcp": "cd mcp-server && npm run build",
+    "mcp:install": "cd mcp-server && npm install",
+    "mcp:build": "cd mcp-server && npm run build",
+    "mcp:dev": "cd mcp-server && npm run dev",
+    "mcp:inspect": "cd mcp-server && npx @modelcontextprotocol/inspector node dist/index.js",
+    "nextjs:install": "cd prophet-trader-nextjs && npm install",
+    "install:all": "npm run nextjs:install && npm run mcp:install",
+    "test": "cd prophet-trader-nextjs && npm run test",
+    "lint": "cd prophet-trader-nextjs && npm run lint"
+  },
+  "workspaces": [
+    "prophet-trader-nextjs",
+    "mcp-server"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/corinthe/paper-trade"
+  },
+  "keywords": [
+    "trading",
+    "paper-trading",
+    "alpaca",
+    "nextjs",
+    "mcp",
+    "claude-code",
+    "ai-trading"
+  ],
+  "author": "",
+  "license": "MIT"
+}
