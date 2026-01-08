@@ -268,7 +268,7 @@ model Decision {
   take_profit     Float?
   result_pct      Float?
   result_dollars  Float?
-  embedding       Unsupported("vector(768)")?
+  embedding       Unsupported("vector(512)")?
   created_at      DateTime @default(now())
 
   @@index([symbol])

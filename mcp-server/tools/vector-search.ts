@@ -7,38 +7,58 @@ import { MCPTool, callAPI } from '../types.js';
 export const vectorSearchTools: MCPTool[] = [
   {
     name: 'store_trade_embedding',
-    description: 'Store a trade decision with vector embedding for future semantic search',
+    description: 'Store a trade decision with vector embedding for future semantic search. Use this after making trading decisions to build a searchable memory of past trades.',
     inputSchema: {
       type: 'object',
       properties: {
         symbol: {
           type: 'string',
-          description: 'Stock symbol',
+          description: 'Stock symbol (e.g., AAPL, TSLA)',
         },
         action: {
           type: 'string',
-          enum: ['buy', 'sell', 'hold'],
-          description: 'Trading action',
+          enum: ['BUY', 'SELL', 'HOLD', 'CLOSE', 'ADJUST'],
+          description: 'Trading action taken',
         },
         strategy: {
           type: 'string',
-          description: 'Strategy used',
+          description: 'Strategy used (e.g., momentum, breakout, mean_reversion)',
         },
         reasoning: {
           type: 'string',
-          description: 'Reasoning for the trade',
+          description: 'Detailed reasoning for the trade decision',
         },
         market_context: {
           type: 'string',
-          description: 'Market conditions',
+          description: 'Current market conditions and context',
+        },
+        confidence: {
+          type: 'number',
+          description: 'Confidence level (0-1)',
+        },
+        entry_price: {
+          type: 'number',
+          description: 'Entry price for the trade',
+        },
+        qty: {
+          type: 'number',
+          description: 'Quantity of shares',
+        },
+        stop_loss: {
+          type: 'number',
+          description: 'Stop loss price',
+        },
+        take_profit: {
+          type: 'number',
+          description: 'Take profit price',
         },
         result_pct: {
           type: 'number',
-          description: 'Result as percentage (if known)',
+          description: 'Result as percentage (if trade is closed)',
         },
         result_dollars: {
           type: 'number',
-          description: 'Result in dollars (if known)',
+          description: 'Result in dollars (if trade is closed)',
         },
       },
       required: ['symbol', 'action', 'reasoning'],
@@ -53,13 +73,13 @@ export const vectorSearchTools: MCPTool[] = [
 
   {
     name: 'search_similar_trades',
-    description: 'Search for similar past trades using semantic similarity',
+    description: 'Search for similar past trades using semantic similarity. Use this to find historical trades with similar reasoning, market conditions, or strategies to inform current decisions.',
     inputSchema: {
       type: 'object',
       properties: {
         query: {
           type: 'string',
-          description: 'Natural language query describing the trade scenario',
+          description: 'Natural language query describing the trade scenario (e.g., "momentum breakout on tech stock after earnings beat")',
         },
         symbol: {
           type: 'string',
@@ -67,7 +87,7 @@ export const vectorSearchTools: MCPTool[] = [
         },
         action: {
           type: 'string',
-          enum: ['buy', 'sell', 'hold'],
+          enum: ['BUY', 'SELL', 'HOLD', 'CLOSE', 'ADJUST'],
           description: 'Filter by action (optional)',
         },
         limit: {
@@ -76,7 +96,7 @@ export const vectorSearchTools: MCPTool[] = [
         },
         min_similarity: {
           type: 'number',
-          description: 'Minimum similarity score (0-1, default: 0.7)',
+          description: 'Minimum similarity score (0-1, default: 0.5)',
         },
       },
       required: ['query'],

@@ -21,8 +21,7 @@ import { newsTools } from './tools/news.js';
 import { intelligenceTools } from './tools/intelligence.js';
 import { technicalAnalysisTools } from './tools/technical-analysis.js';
 import { activityLogTools } from './tools/activity-log.js';
-// Vector search disabled until implementation
-// import { vectorSearchTools } from './tools/vector-search.js';
+import { vectorSearchTools } from './tools/vector-search.js';
 
 // Configuration
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
@@ -50,7 +49,7 @@ const allTools = [
   ...intelligenceTools,
   ...technicalAnalysisTools,
   ...activityLogTools,
-  // ...vectorSearchTools, // Disabled
+  ...vectorSearchTools,
 ];
 
 // Handle tool list request
