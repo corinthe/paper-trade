@@ -21,6 +21,10 @@ export class AlpacaTradingService {
   constructor() {
     const config = getConfig();
 
+    if (!config.alpaca.apiKey || !config.alpaca.secretKey) {
+      throw new Error('Alpaca API credentials not configured. Set ALPACA_API_KEY and ALPACA_SECRET_KEY.');
+    }
+
     this.client = new Alpaca({
       keyId: config.alpaca.apiKey,
       secretKey: config.alpaca.secretKey,

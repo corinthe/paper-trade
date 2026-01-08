@@ -1,6 +1,7 @@
 /**
  * Claude AI Service
  * Handles AI-powered news analysis and stock recommendations
+ * Supports mock mode for testing without API key
  */
 
 import Anthropic from '@anthropic-ai/sdk';
@@ -9,23 +10,40 @@ import { logger } from '@/lib/utils/logger';
 import type { NewsArticle, CleanedNews, StockAnalysisResult } from '@/lib/types/intelligence';
 
 export class ClaudeService {
-  private client: Anthropic;
+  private client: Anthropic | null = null;
   private model: string = 'claude-3-5-sonnet-20241022';
+  private mockMode: boolean;
 
   constructor() {
     const config = getConfig();
-    this.client = new Anthropic({
-      apiKey: config.anthropic.apiKey,
-    });
+    this.mockMode = config.mockMode || !config.anthropic.apiKey;
 
-    logger.info('ClaudeService initialized', { model: this.model });
+    if (!this.mockMode) {
+      this.client = new Anthropic({
+        apiKey: config.anthropic.apiKey,
+      });
+      logger.info('ClaudeService initialized', { model: this.model });
+    } else {
+      logger.warn('ClaudeService running in MOCK MODE - no real AI analysis');
+    }
+  }
+
+  /**
+   * Check if running in mock mode
+   */
+  isMockMode(): boolean {
+    return this.mockMode;
   }
 
   /**
    * Clean and summarize news articles for trading decisions
    */
   async cleanNewsForTrading(articles: NewsArticle[]): Promise<CleanedNews> {
-    logger.info('Cleaning news for trading', { count: articles.length });
+    logger.info('Cleaning news for trading', { count: articles.length, mockMode: this.mockMode });
+
+    if (this.mockMode) {
+      return this.mockCleanNews(articles);
+    }
 
     const prompt = `You are a financial analyst. Analyze these news articles and provide a concise summary for trading decisions.
 
@@ -45,7 +63,7 @@ Provide your analysis in the following JSON format:
 Focus on actionable trading insights.`;
 
     try {
-      const response = await this.client.messages.create({
+      const response = await this.client!.messages.create({
         model: this.model,
         max_tokens: 1024,
         messages: [
@@ -90,7 +108,11 @@ Focus on actionable trading insights.`;
     technical_analysis: any;
     news_summary?: CleanedNews;
   }): Promise<StockAnalysisResult['ai_recommendation']> {
-    logger.info('Analyzing stock with AI', { symbol: params.symbol });
+    logger.info('Analyzing stock with AI', { symbol: params.symbol, mockMode: this.mockMode });
+
+    if (this.mockMode) {
+      return this.mockStockAnalysis(params);
+    }
 
     const prompt = `You are an expert stock trader. Analyze this stock and provide a trading recommendation.
 
@@ -119,7 +141,7 @@ Provide your recommendation in the following JSON format:
 Be concise but thorough in your reasoning.`;
 
     try {
-      const response = await this.client.messages.create({
+      const response = await this.client!.messages.create({
         model: this.model,
         max_tokens: 1024,
         messages: [
@@ -164,7 +186,12 @@ Be concise but thorough in your reasoning.`;
   async generateMarketIntelligence(newsArticles: NewsArticle[]): Promise<string> {
     logger.info('Generating market intelligence', {
       articlesCount: newsArticles.length,
+      mockMode: this.mockMode,
     });
+
+    if (this.mockMode) {
+      return this.mockMarketIntelligence(newsArticles);
+    }
 
     const prompt = `You are a financial market analyst. Provide a brief market intelligence summary based on these news articles.
 
@@ -173,7 +200,7 @@ ${newsArticles.map((a, i) => `${i + 1}. ${a.title} (${a.source})`).join('\n')}
 Provide a 3-4 sentence summary of the current market conditions and sentiment.`;
 
     try {
-      const response = await this.client.messages.create({
+      const response = await this.client!.messages.create({
         model: this.model,
         max_tokens: 512,
         messages: [
@@ -196,5 +223,106 @@ Provide a 3-4 sentence summary of the current market conditions and sentiment.`;
       logger.error('Failed to generate market intelligence', error as Error);
       throw error;
     }
+  }
+
+  // ============================================================================
+  // MOCK IMPLEMENTATIONS
+  // ============================================================================
+
+  private mockCleanNews(articles: NewsArticle[]): CleanedNews {
+    // Extract symbols mentioned in titles
+    const symbolPattern = /\b([A-Z]{2,5})\b/g;
+    const symbols = new Set<string>();
+    articles.forEach(a => {
+      const matches = a.title.match(symbolPattern);
+      if (matches) matches.forEach(s => symbols.add(s));
+    });
+
+    // Simple sentiment based on keywords
+    const text = articles.map(a => a.title.toLowerCase()).join(' ');
+    let sentiment: 'bullish' | 'bearish' | 'neutral' = 'neutral';
+    const bullishWords = ['surge', 'jump', 'rally', 'gain', 'up', 'high', 'growth', 'beat', 'strong'];
+    const bearishWords = ['drop', 'fall', 'crash', 'down', 'low', 'decline', 'miss', 'weak', 'fear'];
+
+    const bullishCount = bullishWords.filter(w => text.includes(w)).length;
+    const bearishCount = bearishWords.filter(w => text.includes(w)).length;
+
+    if (bullishCount > bearishCount + 1) sentiment = 'bullish';
+    else if (bearishCount > bullishCount + 1) sentiment = 'bearish';
+
+    return {
+      summary: `[MOCK] Analyzed ${articles.length} articles. Market sentiment appears ${sentiment} based on keyword analysis.`,
+      key_points: [
+        `[MOCK] ${articles.length} news articles processed`,
+        `[MOCK] Detected sentiment: ${sentiment}`,
+        `[MOCK] This is simulated analysis - enable Claude API for real insights`,
+      ],
+      sentiment,
+      confidence: 0.5,
+      relevant_symbols: Array.from(symbols).slice(0, 5),
+      articles_analyzed: articles.length,
+    };
+  }
+
+  private mockStockAnalysis(params: {
+    symbol: string;
+    current_price: number;
+    technical_analysis: any;
+    news_summary?: CleanedNews;
+  }): StockAnalysisResult['ai_recommendation'] {
+    // Simple mock analysis based on technical indicators if available
+    const ta = params.technical_analysis || {};
+    let action: 'BUY' | 'SELL' | 'HOLD' = 'HOLD';
+    let reasoning = '[MOCK] ';
+
+    // Check RSI if available
+    if (ta.rsi !== undefined) {
+      if (ta.rsi < 30) {
+        action = 'BUY';
+        reasoning += `RSI at ${ta.rsi.toFixed(1)} indicates oversold conditions. `;
+      } else if (ta.rsi > 70) {
+        action = 'SELL';
+        reasoning += `RSI at ${ta.rsi.toFixed(1)} indicates overbought conditions. `;
+      } else {
+        reasoning += `RSI at ${ta.rsi.toFixed(1)} is neutral. `;
+      }
+    }
+
+    // Check trend if available
+    if (ta.trend) {
+      reasoning += `Trend is ${ta.trend}. `;
+    }
+
+    // Factor in news sentiment
+    if (params.news_summary) {
+      reasoning += `News sentiment is ${params.news_summary.sentiment}. `;
+      if (params.news_summary.sentiment === 'bullish' && action === 'HOLD') {
+        action = 'BUY';
+      } else if (params.news_summary.sentiment === 'bearish' && action === 'HOLD') {
+        action = 'SELL';
+      }
+    }
+
+    reasoning += 'This is simulated analysis - enable Claude API for real AI recommendations.';
+
+    const stopLoss = params.current_price * 0.95;
+    const takeProfit = params.current_price * 1.1;
+
+    return {
+      action,
+      confidence: 0.5,
+      reasoning,
+      entry_price: params.current_price,
+      stop_loss: stopLoss,
+      take_profit: takeProfit,
+      risk_reward_ratio: (takeProfit - params.current_price) / (params.current_price - stopLoss),
+    };
+  }
+
+  private mockMarketIntelligence(newsArticles: NewsArticle[]): string {
+    const sources = [...new Set(newsArticles.map(a => a.source))];
+    return `[MOCK MODE] Market intelligence based on ${newsArticles.length} articles from ${sources.join(', ')}. ` +
+      `Headlines suggest mixed market conditions. For accurate AI-powered analysis, configure ANTHROPIC_API_KEY. ` +
+      `Current data includes: ${newsArticles.slice(0, 3).map(a => a.title.substring(0, 50)).join('; ')}...`;
   }
 }

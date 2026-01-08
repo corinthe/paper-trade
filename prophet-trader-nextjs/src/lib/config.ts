@@ -1,40 +1,59 @@
 /**
  * Application configuration with Zod validation
+ * Supports mock mode for testing without paid APIs
  */
 
 import { z } from 'zod';
 
 const ConfigSchema = z.object({
   alpaca: z.object({
-    apiKey: z.string().min(1, 'ALPACA_API_KEY is required'),
-    secretKey: z.string().min(1, 'ALPACA_SECRET_KEY is required'),
+    apiKey: z.string(),
+    secretKey: z.string(),
     paper: z.boolean(),
   }),
   anthropic: z.object({
-    apiKey: z.string().min(1, 'ANTHROPIC_API_KEY is required'),
+    apiKey: z.string(),
+  }),
+  voyage: z.object({
+    apiKey: z.string(),
   }),
   database: z.object({
-    url: z.string().url('DATABASE_URL must be a valid URL'),
+    url: z.string(),
   }),
   env: z.enum(['development', 'production', 'test']),
+  mockMode: z.boolean(),
 });
 
 export type Config = z.infer<typeof ConfigSchema>;
 
 function loadConfig(): Config {
+  // mockMode controls AI services (Claude, Voyage) only
+  // Alpaca trading is always real when configured
+  const anthropicKey = process.env.ANTHROPIC_API_KEY || '';
+  const alpacaKey = process.env.ALPACA_API_KEY || '';
+  const alpacaSecret = process.env.ALPACA_SECRET_KEY || '';
+
+  // Mock mode only affects AI services (Claude)
+  // Set MOCK_MODE=true to force mock mode, or it auto-enables when ANTHROPIC_API_KEY is missing
+  const mockMode = process.env.MOCK_MODE === 'true' || !anthropicKey;
+
   return ConfigSchema.parse({
     alpaca: {
-      apiKey: process.env.ALPACA_API_KEY || '',
-      secretKey: process.env.ALPACA_SECRET_KEY || '',
-      paper: process.env.ALPACA_PAPER === 'true',
+      apiKey: alpacaKey,
+      secretKey: alpacaSecret,
+      paper: process.env.ALPACA_PAPER !== 'false', // Default to paper trading
     },
     anthropic: {
-      apiKey: process.env.ANTHROPIC_API_KEY || '',
+      apiKey: anthropicKey,
+    },
+    voyage: {
+      apiKey: process.env.VOYAGE_API_KEY || '',
     },
     database: {
-      url: process.env.DATABASE_URL || '',
+      url: process.env.DATABASE_URL || process.env.PRISMA_DATABASE_URL || '',
     },
-    env: process.env.NODE_ENV || 'development',
+    env: (process.env.NODE_ENV as 'development' | 'production' | 'test') || 'development',
+    mockMode,
   });
 }
 
