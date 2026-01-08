@@ -76,21 +76,38 @@ This MCP server provides comprehensive access to the Prophet Trader system, allo
 ### 1. Build the MCP Server
 
 ```bash
-cd mcp-server
 npm install
 npm run build
 ```
 
 ### 2. Configure Claude Code
 
-Add to your Claude Code MCP settings (`~/.config/claude-code/mcp.json`):
+Add to your Claude Code MCP settings:
+
+**Production (Recommended)** - Uses Vercel deployment, no local backend needed:
 
 ```json
 {
   "mcpServers": {
     "prophet-trader": {
       "command": "node",
-      "args": ["/absolute/path/to/prophet-trader-nextjs/mcp-server/dist/index.js"],
+      "args": ["/absolute/path/to/paper-trade/mcp-server/dist/index.js"],
+      "env": {
+        "API_BASE_URL": "https://paper-trade-iota.vercel.app"
+      }
+    }
+  }
+}
+```
+
+**Local Development** - For testing changes:
+
+```json
+{
+  "mcpServers": {
+    "prophet-trader": {
+      "command": "node",
+      "args": ["/absolute/path/to/paper-trade/mcp-server/dist/index.js"],
       "env": {
         "API_BASE_URL": "http://localhost:3000"
       }
@@ -99,14 +116,11 @@ Add to your Claude Code MCP settings (`~/.config/claude-code/mcp.json`):
 }
 ```
 
-### 3. Start the Next.js Backend
-
+If using local development, start the Next.js backend first:
 ```bash
-cd ../
+cd ../prophet-trader-nextjs
 npm run dev
 ```
-
-The backend must be running on `http://localhost:3000` for the MCP server to work.
 
 ### 4. Use with Claude Code
 
@@ -121,7 +135,9 @@ Hey Claude, use the prophet-trader MCP server to:
 
 ## Environment Variables
 
-- `API_BASE_URL` - Base URL of the Next.js backend (default: `http://localhost:3000`)
+- `API_BASE_URL` - Base URL of the Next.js backend
+  - **Production (default)**: `https://paper-trade-iota.vercel.app`
+  - **Local development**: `http://localhost:3000`
 
 ## Development
 
@@ -155,7 +171,7 @@ npx @modelcontextprotocol/inspector node dist/index.js
          ↓
 ┌─────────────────┐
 │  Next.js API    │  ← Trading backend
-│  (localhost:3000)│
+│  (Vercel/Local) │  ← paper-trade-iota.vercel.app
 └────────┬────────┘
          │
          ↓
